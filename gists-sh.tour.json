@@ -14,7 +14,7 @@
     {
       "id": "app-router",
       "title": "App Router & Page Structure",
-      "description": "The app uses Next.js App Router with a dynamic [user]/[gistId] route as the main gist viewer. The root page.tsx is the landing page, layout.tsx handles theming (dark/light mode with flash-free initialization), and the dynamic route fetches gist data from the GitHub API with ISR caching (24h revalidation).",
+      "description": "The app uses Next.js App Router. The root page.tsx is the landing page, layout.tsx handles theming (dark/light mode with flash-free initialization), and a dynamic route fetches gist data from the GitHub API with ISR caching (24h revalidation).",
       "focusDirectory": "src/app",
       "colorMode": "fileTypes",
       "highlightLayers": [
