@@ -1,0 +1,199 @@
+{
+  "id": "gists-sh-onboarding",
+  "title": "gists.sh Codebase Tour",
+  "description": "A guided walkthrough of gists.sh, the minimal, beautiful viewer for GitHub Gists. Covers the app architecture, rendering pipeline, and key design decisions.",
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "overview",
+      "title": "Welcome to gists.sh",
+      "description": "gists.sh is a Next.js 15 app that transforms GitHub Gist URLs into clean, beautifully rendered pages. Replace gist.github.com with gists.sh in any URL to get syntax highlighting, markdown rendering, and distraction-free reading. The project uses the App Router, Tailwind CSS v4, and Shiki for syntax highlighting.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes"
+    },
+    {
+      "id": "app-router",
+      "title": "App Router & Page Structure",
+      "description": "The app uses Next.js App Router with a dynamic [user]/[gistId] route as the main gist viewer. The root page.tsx is the landing page, layout.tsx handles theming (dark/light mode with flash-free initialization), and the dynamic route fetches gist data from the GitHub API with ISR caching (24h revalidation).",
+      "focusDirectory": "src/app",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "entry-points",
+          "name": "Entry Points",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "src/app/layout.tsx", "type": "file" },
+            { "path": "src/app/page.tsx", "type": "file" },
+            { "path": "src/app/globals.css", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "gist-viewer",
+          "name": "Gist Viewer Route",
+          "color": "#10b981",
+          "items": [
+            { "path": "src/app/[user]/[gistId]", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "rendering-pipeline",
+      "title": "Content Rendering Pipeline",
+      "description": "The gist viewer detects each file's type and renders it with the appropriate component. Markdown files get full rendering via react-markdown with remark-gfm. Code files are syntax-highlighted by Shiki. Structured data (JSON, YAML, CSV, ICS) gets dual-view rendering with both a formatted viewer and raw code. Plain text renders as-is. All files in a multi-file gist are pre-rendered in parallel on the server.",
+      "focusDirectory": "src/components",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "core-renderers",
+          "name": "Core Renderers",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "src/components/markdown-renderer.tsx", "type": "file" },
+            { "path": "src/components/code-renderer.tsx", "type": "file" },
+            { "path": "src/components/gist-client-shell.tsx", "type": "file" },
+            { "path": "src/components/file-tabs.tsx", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "structured-viewers",
+          "name": "Structured Data Viewers",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "src/components/renderers", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "github-api",
+      "title": "GitHub API & Data Layer",
+      "description": "The lib directory contains the GitHub API client, Shiki syntax highlighter setup, and utilities. github.ts handles fetching gists and users with proper auth headers, rate limit handling, and file type detection. Responses are cached via Next.js ISR with 24-hour revalidation. A refresh route enables on-demand cache purging when gists are updated.",
+      "focusDirectory": "src/lib",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "data-layer",
+          "name": "Data Layer",
+          "color": "#ef4444",
+          "items": [
+            { "path": "src/lib/github.ts", "type": "file" },
+            { "path": "src/lib/shiki.ts", "type": "file" },
+            { "path": "src/lib/utils.ts", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "rehype-plugins",
+          "name": "Rehype Plugins",
+          "color": "#06b6d4",
+          "items": [
+            { "path": "src/lib/rehype-extract-toc.ts", "type": "file" },
+            { "path": "src/lib/rehype-wrap-tables.ts", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "ui-components",
+      "title": "UI Components & Interactions",
+      "description": "The components directory houses the UI building blocks. Copy buttons let users grab code or raw content. The before-after component showcases the visual improvement over GitHub. The param-configurator lets visitors build their own gists.sh URLs. A table-of-contents sidebar appears for long markdown documents. All components follow a minimalist design with clean typography.",
+      "focusDirectory": "src/components",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "interactive-ui",
+          "name": "Interactive UI",
+          "color": "#ec4899",
+          "items": [
+            { "path": "src/components/copy-button.tsx", "type": "file" },
+            { "path": "src/components/before-after.tsx", "type": "file" },
+            { "path": "src/components/param-configurator.tsx", "type": "file" },
+            { "path": "src/components/table-of-contents.tsx", "type": "file" },
+            { "path": "src/components/click-to-copy.tsx", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "ui-primitives",
+          "name": "UI Primitives",
+          "color": "#6366f1",
+          "items": [
+            { "path": "src/components/ui", "type": "directory" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "api-routes",
+      "title": "API Routes & SEO",
+      "description": "The API layer includes a raw content proxy that serves gist files with correct Content-Type headers, a refresh endpoint for cache busting, and OpenGraph image generation for rich link previews. The robots.txt and llms.txt routes handle search engine indexing and LLM discoverability. Secret gists are marked noindex to protect privacy.",
+      "focusDirectory": "src/app",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "api-routes",
+          "name": "API Routes",
+          "color": "#14b8a6",
+          "items": [
+            { "path": "src/app/api/raw/[gistId]/route.ts", "type": "file" },
+            { "path": "src/app/[user]/[gistId]/refresh/route.ts", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "seo-meta",
+          "name": "SEO & Metadata",
+          "color": "#f97316",
+          "items": [
+            { "path": "src/app/robots.txt/route.ts", "type": "file" },
+            { "path": "src/app/llms.txt/route.ts", "type": "file" },
+            { "path": "src/app/opengraph-image.tsx", "type": "file" },
+            { "path": "src/app/[user]/[gistId]/opengraph-image.tsx", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    },
+    {
+      "id": "configuration",
+      "title": "Configuration & Tooling",
+      "description": "The project uses pnpm for package management, TypeScript for type safety, ESLint for linting, and Tailwind CSS v4 with PostCSS. The Next.js config is minimal. A GITHUB_TOKEN env variable enables higher API rate limits. The project deploys on Vercel with ISR for optimal performance.",
+      "focusDirectory": "",
+      "colorMode": "fileTypes",
+      "highlightLayers": [
+        {
+          "id": "config-files",
+          "name": "Configuration",
+          "color": "#a855f7",
+          "items": [
+            { "path": "package.json", "type": "file" },
+            { "path": "tsconfig.json", "type": "file" },
+            { "path": "next.config.ts", "type": "file" },
+            { "path": "eslint.config.mjs", "type": "file" },
+            { "path": "postcss.config.mjs", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "renderStrategy": "border"
+        }
+      ]
+    }
+  ]
+}
